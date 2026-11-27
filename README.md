@@ -12,22 +12,40 @@ Spring creates `UtilityService` from its `@Service` annotation. `AppConfig` crea
 
 ## Module 3
 
-Employees are stored in memory. The list is cleared when the application restarts.
+Introduced `GET /employees` and `POST /employees` using in-memory storage. Module 4 replaces that storage with PostgreSQL.
+
+## Module 4
+
+Employees and departments are stored in PostgreSQL. Docker Compose starts the application, PostgreSQL, and pgAdmin.
+
+Employee APIs:
 
 - `GET /employees`: list employees.
-- `POST /employees`: add an employee and return HTTP 201.
+- `GET /employees/{id}`: get one employee.
+- `POST /employees?departmentId={id}`: create an employee.
+- `PUT /employees/{id}?departmentId={departmentId}`: update an employee.
+- `DELETE /employees/{id}`: delete an employee.
+- `GET /employees/search?name={name}`: search by name.
+- `GET /employees/department/{id}`: search by department.
 
-To add an employee:
+Department APIs:
+
+- `GET /departments`: list departments.
+- `POST /departments`: create a department.
+
+Create a department first:
 
 ```bash
-curl -i -X POST http://localhost:8080/employees -H 'Content-Type: application/json' -d '{"name":"  Nguyen   Van A  ","email":"a@example.com"}'
+curl -i -X POST http://localhost:8080/departments -H 'Content-Type: application/json' -d '{"name":"Engineering"}'
 ```
 
-To list employees:
+Use the returned department ID to create an employee:
 
 ```bash
-curl http://localhost:8080/employees
+curl -i -X POST 'http://localhost:8080/employees?departmentId=1' -H 'Content-Type: application/json' -d '{"name":"Nguyen Van A","email":"a@example.com"}'
 ```
+
+pgAdmin is available at `http://localhost:5050`. Sign in with `admin@example.com` / `admin123`, then connect to host `database`, port `5432`, database `employee_management`, user `employee_user`, password `employee_password`.
 
 ## Requirements
 
